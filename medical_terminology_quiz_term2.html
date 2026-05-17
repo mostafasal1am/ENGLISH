@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medical Terminology Quiz — BY MOSTAFA SALLAM</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0a1628;--blue:#1565c0;--blue-light:#42a5f5;--cyan:#26c6da;--emerald:#10b981;--red:#ef4444;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);min-height:100vh;overflow-x:hidden;padding-bottom:80px;}
+.bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.12;animation:drift 12s ease-in-out infinite alternate;}
+.orb1{width:500px;height:500px;background:#1565c0;top:-100px;left:-100px;}
+.orb2{width:400px;height:400px;background:#0d47a1;top:40%;right:-80px;animation-delay:3s;}
+.orb3{width:300px;height:300px;background:#26c6da;bottom:10%;left:20%;animation-delay:6s;}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(30px,40px) scale(1.08)}}
+.sticky{position:fixed;top:0;left:0;right:0;z-index:999;background:rgba(10,22,40,0.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(21,101,192,0.3);padding:10px 20px;}
+.sticky-inner{max-width:820px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.pill{padding:5px 14px;border-radius:20px;font-size:.8em;font-weight:600;white-space:nowrap;}
+.pill-q{background:rgba(255,255,255,.1);color:#e2e8f0;border:1px solid rgba(255,255,255,.2);}
+.pill-c{background:rgba(16,185,129,.2);color:#6ee7b7;border:1px solid #10b981;}
+.pill-w{background:rgba(239,68,68,.2);color:#fca5a5;border:1px solid #ef4444;}
+.pill-p{background:rgba(66,165,245,.2);color:#90caf9;border:1px solid #42a5f5;}
+.prog-wrap{flex:1;background:rgba(255,255,255,.1);border-radius:8px;height:6px;min-width:60px;overflow:hidden;}
+.prog-fill{background:linear-gradient(90deg,var(--blue),var(--cyan));height:100%;border-radius:8px;transition:width .5s;}
+#startScreen{position:relative;z-index:1;max-width:680px;margin:80px auto 0;padding:20px;}
+.start-card{background:rgba(255,255,255,0.05);backdrop-filter:blur(20px);border:1px solid rgba(21,101,192,0.4);border-radius:24px;padding:44px 40px;box-shadow:0 40px 80px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,0.1);}
+.atom-icon{font-size:3.5em;display:block;text-align:center;margin-bottom:14px;animation:pulse-icon 3s ease-in-out infinite;}
+@keyframes pulse-icon{0%,100%{transform:scale(1);filter:drop-shadow(0 0 15px rgba(66,165,245,.4))}50%{transform:scale(1.06);filter:drop-shadow(0 0 30px rgba(66,165,245,.8))}}
+.start-card h1{font-family:'Playfair Display',serif;font-size:2.2em;font-weight:900;color:#fff;text-align:center;margin-bottom:6px;}
+.subtitle{text-align:center;color:var(--blue-light);font-size:.95em;margin-bottom:28px;opacity:.85;}
+.section-label{color:#94a3b8;font-size:.8em;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;}
+.filter-group{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.filter-btn{padding:7px 16px;border-radius:20px;cursor:pointer;font-size:.85em;font-weight:500;transition:all .2s;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:#94a3b8;font-family:'DM Sans',sans-serif;}
+.filter-btn:hover{border-color:var(--blue-light);color:var(--blue-light);background:rgba(66,165,245,.08);}
+.filter-btn.active{background:linear-gradient(135deg,rgba(21,101,192,.5),rgba(66,165,245,.2));border-color:var(--blue-light);color:var(--blue-light);box-shadow:0 0 14px rgba(66,165,245,.2);}
+.start-info{color:#64748b;font-size:.9em;text-align:center;margin-bottom:22px;}
+.start-info span{color:var(--blue-light);font-weight:700;}
+.btn-start{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--blue),#0d47a1);color:#fff;font-size:1.1em;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .25s;box-shadow:0 8px 30px rgba(21,101,192,.5);}
+.btn-start:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(21,101,192,.6);}
+.by-line{text-align:center;margin-top:20px;padding-top:18px;border-top:1px solid rgba(21,101,192,0.25);}
+.by-line .designed-text{color:#4a6080;font-size:.75em;letter-spacing:2px;font-weight:500;text-transform:uppercase;display:block;margin-bottom:4px;}
+.by-line .name-text{color:var(--blue-light);font-size:1em;font-weight:700;letter-spacing:3px;font-family:'Playfair Display',serif;display:block;}
+#quizWrapper{display:none;padding-top:75px;position:relative;z-index:1;}
+.q-card{max-width:820px;margin:18px auto;padding:28px 32px;background:rgba(255,255,255,0.97);border-radius:20px;box-shadow:0 8px 40px rgba(0,0,0,.3);border-left:5px solid rgba(21,101,192,0.3);transition:border-color .35s;animation:slideIn .35s ease both;}
+@keyframes slideIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.q-card.answered-correct{border-left-color:var(--emerald);}
+.q-card.answered-wrong{border-left-color:var(--red);}
+.q-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.q-num{background:linear-gradient(135deg,var(--blue),#0d47a1);color:#fff;min-width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85em;flex-shrink:0;}
+.cat-tag{padding:3px 12px;border-radius:20px;font-size:.72em;font-weight:600;color:#fff;}
+.cat-tag.mcq{background:linear-gradient(135deg,#1565c0,#0d47a1);}
+.cat-tag.tf{background:linear-gradient(135deg,#00897b,#00695c);}
+.q-text{font-size:1.06em;font-weight:600;color:#0f172a;line-height:1.6;margin-bottom:18px;}
+.opts{display:flex;flex-direction:column;gap:9px;}
+.opt{padding:12px 18px;border:2px solid #e2e8f0;border-radius:12px;cursor:pointer;font-size:.96em;text-align:left;background:#fff;color:#334155;transition:all .18s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:10px;width:100%;}
+.opt-letter{width:28px;height:28px;border-radius:50%;background:#f1f5f9;border:2px solid #cbd5e1;display:flex;align-items:center;justify-content:center;font-size:.8em;font-weight:700;color:#64748b;flex-shrink:0;transition:all .18s;}
+.opt:hover:not(:disabled){border-color:var(--blue);background:#eff6ff;transform:translateX(5px);}
+.opt:hover:not(:disabled) .opt-letter{background:var(--blue);border-color:var(--blue);color:#fff;}
+.opt.correct{border-color:var(--emerald);background:#f0fdf4;color:#065f46;font-weight:600;}
+.opt.correct .opt-letter{background:var(--emerald);border-color:var(--emerald);color:#fff;}
+.opt.wrong{border-color:var(--red);background:#fef2f2;color:#7f1d1d;}
+.opt.wrong .opt-letter{background:var(--red);border-color:var(--red);color:#fff;}
+.opt:disabled{cursor:default;}
+.q-feedback{margin-top:14px;padding:12px 16px;border-radius:12px;font-size:.9em;line-height:1.8;display:none;}
+.q-feedback.correct{background:#f0fdf4;border-left:4px solid var(--emerald);color:#065f46;}
+.q-feedback.wrong{background:#fef2f2;border-left:4px solid var(--red);color:#7f1d1d;}
+.submit-wrap{max-width:820px;margin:24px auto;text-align:center;padding:0 20px;}
+.btn-submit{padding:16px 70px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--blue),#0d47a1);color:#fff;font-size:1.1em;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;box-shadow:0 8px 30px rgba(21,101,192,.5);}
+.btn-submit:hover{transform:translateY(-3px);}
+.btn-submit:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+#resultsBox{max-width:820px;margin:24px auto;padding:40px;background:rgba(255,255,255,.97);border-radius:24px;text-align:center;display:none;box-shadow:0 30px 80px rgba(0,0,0,.4);animation:slideIn .4s ease;}
+#resultsBox h2{font-family:'Playfair Display',serif;color:var(--navy);font-size:2em;margin-bottom:8px;}
+.score-ring{width:160px;height:160px;margin:20px auto;position:relative;}
+.score-ring svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:#e2e8f0;stroke-width:12;}
+.ring-fg{fill:none;stroke:url(#ringGrad);stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 1s cubic-bezier(.4,0,.2,1);}
+.score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-center .big{font-size:2.4em;font-weight:900;color:var(--navy);font-family:'Playfair Display',serif;}
+.score-center .small{font-size:.8em;color:#64748b;}
+.result-msg{font-size:1.05em;color:#475569;margin:10px 0 24px;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+.stat-card{border-radius:16px;padding:16px 10px;}
+.stat-card.c{background:#f0fdf4;border:2px solid #10b981;}
+.stat-card.w{background:#fef2f2;border:2px solid #ef4444;}
+.stat-card.p{background:#eff6ff;border:2px solid #42a5f5;}
+.stat-card .num{font-size:2em;font-weight:900;font-family:'Playfair Display',serif;}
+.stat-card.c .num{color:#10b981;}.stat-card.w .num{color:#ef4444;}.stat-card.p .num{color:#1565c0;}
+.stat-card .lbl{font-size:.8em;color:#64748b;margin-top:4px;}
+.btn-re,.btn-home{width:100%;padding:14px;border:none;border-radius:14px;font-size:1.05em;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;margin-bottom:10px;transition:all .2s;}
+.btn-re{background:linear-gradient(135deg,var(--blue),#0d47a1);color:#fff;}
+.btn-home{background:#f1f5f9;color:#475569;}
+.btn-re:hover{transform:translateY(-2px);}.btn-home:hover{background:#e2e8f0;}
+.review-section{text-align:left;margin-top:24px;}
+.review-section h3{color:var(--navy);font-size:1.1em;margin-bottom:14px;font-family:'Playfair Display',serif;}
+.rev-item{padding:14px 16px;border-radius:12px;margin-bottom:10px;font-size:.88em;line-height:1.6;}
+.rev-item.wrong{background:#fef2f2;border-left:4px solid var(--red);}
+.rev-item .rt{font-weight:700;margin-bottom:5px;color:#1e293b;}
+.rev-item .exp{color:#64748b;font-size:.9em;margin-top:5px;}
+@media(max-width:600px){.start-card{padding:28px 22px}.start-card h1{font-size:1.7em}.q-card{padding:20px 18px;margin:14px 12px}#resultsBox{padding:28px 20px}}
+</style>
+</head>
+<body>
+<div class="bg-orbs"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div></div>
+<div class="sticky" id="stickyBar" style="display:none">
+  <div class="sticky-inner">
+    <div class="pill pill-q" id="sNum">0/0</div>
+    <div class="pill pill-c" id="sC">✅ 0</div>
+    <div class="pill pill-w" id="sW">❌ 0</div>
+    <div class="pill pill-p" id="sP">📊 0%</div>
+    <div class="prog-wrap"><div class="prog-fill" id="sFill" style="width:0%"></div></div>
+  </div>
+</div>
+<div id="startScreen">
+  <div class="start-card">
+    <span class="atom-icon">🩺</span>
+    <h1>Medical Terminology Quiz</h1>
+    <p class="subtitle">2nd Term · MCQ · True/False — Full Revision</p>
+    <div class="by-line" style="margin-top:0;margin-bottom:22px;padding-top:0;border-top:none;">
+      <span class="designed-text">Designed &amp; Developed by</span>
+      <span class="name-text">𝑴𝑶𝑺𝑻𝑨𝑭𝑨 𝑺𝑨𝑳𝑳𝑨𝑴</span>
+    </div>
+    <p class="section-label">Choose Section</p>
+    <div class="filter-group">
+      <button class="filter-btn active" onclick="selectCat('all',this)">📚 All Questions</button>
+      <button class="filter-btn" onclick="selectCat('mcq',this)">📝 MCQ Only</button>
+      <button class="filter-btn" onclick="selectCat('tf',this)">✅ True / False Only</button>
+    </div>
+    <p class="start-info">Number of questions: <span id="qCount">0</span></p>
+    <button class="btn-start" onclick="startQuiz()">Start Quiz ▶</button>
+    <div class="by-line">
+      <span class="designed-text">Designed &amp; Developed by</span>
+      <span class="name-text">𝑴𝑶𝑺𝑻𝑨𝑭𝑨 𝑺𝑨𝑳𝑳𝑨𝑴</span>
+    </div>
+  </div>
+</div>
+<div id="quizWrapper">
+  <div id="cardsContainer"></div>
+  <div class="submit-wrap">
+    <button class="btn-submit" id="submitBtn" onclick="showResults()" disabled>Show Results 🎯</button>
+  </div>
+  <div id="resultsBox">
+    <h2>🎉 Quiz Complete!</h2>
+    <div class="score-ring">
+      <svg width="160" height="160" viewBox="0 0 160 160">
+        <defs><linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#1565c0"/><stop offset="100%" stop-color="#42a5f5"/></linearGradient></defs>
+        <circle class="ring-bg" cx="80" cy="80" r="64"/>
+        <circle class="ring-fg" id="ringFg" cx="80" cy="80" r="64" stroke-dasharray="402" stroke-dashoffset="402"/>
+      </svg>
+      <div class="score-center"><span class="big" id="rScore">0</span><span class="small">out of <span id="rTotal">0</span></span></div>
+    </div>
+    <div class="result-msg" id="rMsg"></div>
+    <div class="stats-grid">
+      <div class="stat-card c"><div class="num" id="rC">0</div><div class="lbl">✅ Correct</div></div>
+      <div class="stat-card w"><div class="num" id="rW">0</div><div class="lbl">❌ Wrong</div></div>
+      <div class="stat-card p"><div class="num" id="rP">0%</div><div class="lbl">📊 Score</div></div>
+    </div>
+    <button class="btn-re" onclick="startQuiz()">🔄 Retry Quiz</button>
+    <button class="btn-home" onclick="goHome()">🏠 Home</button>
+    <div class="review-section" id="reviewDiv"></div>
+  </div>
+</div>
+<script>
+const L=['A','B','C','D'];
+let cat='all',qs=[],ans=0,cor=0,wr=0;
+
+const MCQ=[
+{cat:'mcq',q:"Which term refers to the medical study of the digestive system?",opts:["Gastroenterology","Proctology","Endocrinology","Nephrology"],c:0,exp:"Gastroenterology is the branch of medicine focused on the digestive system and its disorders."},
+{cat:'mcq',q:"The term \"stomat/o\" refers to which part of the digestive system?",opts:["Esophagus","Stomach","Mouth","Intestine"],c:2,exp:"Stomat/o is the combining form meaning mouth — the beginning of the digestive tract."},
+{cat:'mcq',q:"What is the term for inflammation of the stomach?",opts:["Gastritis","Enteritis","Hepatitis","Cholecystitis"],c:0,exp:"Gastritis = gastr (stomach) + itis (inflammation) — inflammation of the stomach lining."},
+{cat:'mcq',q:"The term \"hepat/o\" refers to which organ?",opts:["Pancreas","Liver","Kidney","Gallbladder"],c:1,exp:"Hepat/o is the combining form for liver — used in terms like hepatitis, hepatomegaly."},
+{cat:'mcq',q:"The suffix \"-phagia\" means:",opts:["Swallowing","Digestion","Secretion","Defecation"],c:0,exp:"-phagia means swallowing or eating — e.g., dysphagia = difficulty swallowing."},
+{cat:'mcq',q:"What does \"cholelithiasis\" refer to?",opts:["Inflammation of the pancreas","Formation of gallstones","Presence of ulcers","Enlargement of the liver"],c:1,exp:"Cholelithiasis: chole (bile/gallbladder) + lith (stone) + iasis (condition) = formation of gallstones."},
+{cat:'mcq',q:"The medical term for difficulty swallowing is:",opts:["Dysphagia","Dyspepsia","Dysphonia","Dysuria"],c:0,exp:"Dysphagia: dys (difficult) + phagia (swallowing) = difficulty swallowing."},
+{cat:'mcq',q:"What is the term for the surgical removal of the gallbladder?",opts:["Cholecystectomy","Cholecystitis","Hepatectomy","Colectomy"],c:0,exp:"Cholecystectomy: cholecyst (gallbladder) + ectomy (surgical removal) = removal of the gallbladder."},
+{cat:'mcq',q:"The combining form \"proct/o\" refers to:",opts:["Stomach","Rectum and anus","Liver","Pancreas"],c:1,exp:"Proct/o is the combining form for rectum and anus — used in terms like proctology, proctitis."},
+{cat:'mcq',q:"The condition characterized by inflammation of the small intestine is:",opts:["Enteritis","Gastritis","Proctitis","Hepatitis"],c:0,exp:"Enteritis: enter (intestine) + itis (inflammation) = inflammation of the small intestine."},
+{cat:'mcq',q:"The term \"steatorrhea\" refers to:",opts:["Blood in the stool","Excessive fat in the stool","Frequent urination","Inflammation of the rectum"],c:1,exp:"Steatorrhea: steat (fat) + rrhea (flow/discharge) = excessive fat in the stool, indicating malabsorption."},
+{cat:'mcq',q:"The suffix \"-emesis\" means:",opts:["Vomiting","Swelling","Inflammation","Digestion"],c:0,exp:"-emesis means vomiting — e.g., hematemesis = vomiting blood."},
+{cat:'mcq',q:"What does \"melena\" refer to?",opts:["Yellowing of the skin","Black, tarry stools","Swollen abdomen","Loss of appetite"],c:1,exp:"Melena refers to black, tarry stools caused by digested blood — usually from upper GI bleeding."},
+{cat:'mcq',q:"The esophagus connects the:",opts:["Mouth to stomach","Stomach to small intestine","Liver to pancreas","Large intestine to rectum"],c:0,exp:"The esophagus is the muscular tube connecting the mouth/pharynx to the stomach."},
+{cat:'mcq',q:"Which term refers to the presence of gallstones?",opts:["Cholecystitis","Cholelithiasis","Cholecystectomy","Cholelithotomy"],c:1,exp:"Cholelithiasis = presence of gallstones. Cholecystitis = inflammation. Cholecystectomy = surgical removal."},
+{cat:'mcq',q:"What does \"hematemesis\" mean?",opts:["Blood in the stool","Vomiting blood","Blood in the urine","Pain in the stomach"],c:1,exp:"Hematemesis: hemat (blood) + emesis (vomiting) = vomiting blood, sign of upper GI bleeding."},
+{cat:'mcq',q:"The right atrium receives deoxygenated blood from:",opts:["Pulmonary vein","Aorta","Superior and inferior vena cava","Coronary arteries"],c:2,exp:"The right atrium receives deoxygenated blood from the body via the superior and inferior vena cava."},
+{cat:'mcq',q:"Which valve is located between the right atrium and right ventricle?",opts:["Aortic valve","Pulmonary valve","Mitral valve","Tricuspid valve"],c:3,exp:"The tricuspid valve (3 cusps) separates the right atrium from the right ventricle."},
+{cat:'mcq',q:"What does the term ischemia mean?",opts:["Infection in the heart muscle","Lack of blood supply to tissues","Increased blood flow","Abnormal heart rhythm"],c:1,exp:"Ischemia = insufficient blood supply to tissues, causing oxygen deprivation."},
+{cat:'mcq',q:"Which term describes the absence of breathing?",opts:["Dyspnea","Tachypnea","Apnea","Bradypnea"],c:2,exp:"Apnea: a (without) + pnea (breathing) = complete absence of breathing."},
+{cat:'mcq',q:"The medical term for difficulty breathing is:",opts:["Tachypnea","Dyspnea","Apnea","Orthopnea"],c:1,exp:"Dyspnea: dys (difficult) + pnea (breathing) = labored or difficult breathing."},
+{cat:'mcq',q:"What is the medical term for a nosebleed?",opts:["Hemoptysis","Epistaxis","Sinusitis","Rhinorrhea"],c:1,exp:"Epistaxis is the medical term for nosebleed — bleeding from the nasal passages."},
+{cat:'mcq',q:"The term \"hypoxia\" means:",opts:["Low oxygen in the blood","Excess oxygen in the blood","High carbon dioxide levels","Normal oxygen levels"],c:0,exp:"Hypoxia: hypo (low) + ox (oxygen) + ia (condition) = deficiency of oxygen in tissues."},
+{cat:'mcq',q:"The suffix \"-ectasis\" means:",opts:["Narrowing","Expansion or dilation","Inflammation","Surgical removal"],c:1,exp:"-ectasis means expansion or dilation — e.g., bronchiectasis = dilation of bronchi."},
+{cat:'mcq',q:"What is the term for the surgical removal of the appendix?",opts:["Cholecystectomy","Hysterectomy","Appendectomy","Gastrectomy"],c:2,exp:"Appendectomy: appendix + ectomy (removal) = surgical removal of the appendix."},
+{cat:'mcq',q:"What is the term for a doctor who specializes in the treatment of Heart diseases?",opts:["Oncologist","Cardiologist","Neurologist","Dermatologist"],c:1,exp:"Cardiologist: cardi (heart) + ologist (specialist) = a specialist in heart diseases."},
+{cat:'mcq',q:"What is the term for the surgical removal of the gallbladder? (v2)",opts:["Colectomy","Gastrectomy","Cholecystectomy","Hysterectomy"],c:2,exp:"Cholecystectomy = surgical removal of the gallbladder. A colectomy removes the colon."},
+{cat:'mcq',q:"______ is surgical puncture to aspirate fluid from the abdomen.",opts:["Abdominocentesis","Amniocentesis","Arthrocentesis","Arthroscopy"],c:0,exp:"Abdominocentesis: abdomen + centesis (surgical puncture) = aspiration of fluid from the abdomen."},
+{cat:'mcq',q:"What is the term for abnormally swollen veins in the lower esophagus, often associated with liver disease?",opts:["Hemorrhoids","Esophageal varices","Crohn's disease","Diverticulitis"],c:1,exp:"Esophageal varices = dilated submucosal veins in the esophagus, commonly due to portal hypertension."},
+{cat:'mcq',q:"What is the term for swollen, enlarged veins inside and outside the anus and rectum?",opts:["Hemorrhoids","Esophageal varices","Crohn's disease","Diverticulitis"],c:0,exp:"Hemorrhoids = swollen and enlarged veins in the anus and rectum — very common condition."},
+{cat:'mcq',q:"A/an _____ is a surgical incision into the colon.",opts:["Colostomy","Colectomy","Colotomy","Chyme"],c:2,exp:"Colotomy: col (colon) + otomy (incision) = surgical incision into the colon."},
+{cat:'mcq',q:"What is the term for surgical repair of the abdomen?",opts:["Colectomy","Abdominocentesis","Abdominoplasty","Celiotomy"],c:2,exp:"Abdominoplasty: abdomen + plasty (surgical repair/reshaping) = surgical repair of the abdomen."},
+{cat:'mcq',q:"What is the term for creation of an artificial opening in the colon?",opts:["Colectomy","Colostomy","Colotomy","Celiotomy"],c:1,exp:"Colostomy: col (colon) + ostomy (artificial opening) = creation of a stoma in the colon."},
+{cat:'mcq',q:"The term 'Laparotomy' refers to the incision into which organ?",opts:["Stomach","Gallbladder","Appendix","Abdominal cavity"],c:3,exp:"Laparotomy: lapar (abdomen/flank) + otomy (incision) = surgical incision into the abdominal cavity."},
+{cat:'mcq',q:"What is the term for study of disease and disorders of the rectum?",opts:["Cardiology","Proctology","Proctoptosis","Nephrology"],c:1,exp:"Proctology: proct (rectum) + ology (study of) = medical specialty for rectal and anal disorders."},
+{cat:'mcq',q:"What is the term for inflammation of irregular bulging pouches in the wall of the large intestine?",opts:["Stomatitis","Steatohepatitis","Glossitis","Diverticulitis"],c:3,exp:"Diverticulitis = inflammation of diverticula (small pouches) in the wall of the large intestine."},
+{cat:'mcq',q:"Which term refers to a movement that decreases the angle of a joint?",opts:["Flexion","Extension","Abduction","Adduction"],c:0,exp:"Flexion decreases the angle between two body parts — e.g., bending the elbow."},
+{cat:'mcq',q:"Which of the following statements describes abduction of a joint?",opts:["Decreases the joint angle","Movement away from the midline","Increases the joint angle","Movement towards the midline"],c:1,exp:"Abduction = movement AWAY from the midline of the body — e.g., raising the arm sideways."},
+{cat:'mcq',q:"Which term describes the movement of a body part AWAY from the midline of the body?",opts:["Flexion","Extension","Abduction","Adduction"],c:2,exp:"Abduction: ab (away) + duction (movement) = moving away from the midline of the body."},
+{cat:'mcq',q:"Which term describes the movement of a body part TOWARDS the midline of the body?",opts:["Flexion","Extension","Abduction","Adduction"],c:3,exp:"Adduction: ad (toward) + duction (movement) = moving toward the midline of the body."},
+{cat:'mcq',q:"Which term describes the movement of the foot pointing more superiorly?",opts:["Flexion","Dorsiflexion","Abduction","Plantarflexion"],c:1,exp:"Dorsiflexion = pulling the foot upward toward the shin — decreasing the angle between foot and leg."},
+{cat:'mcq',q:"Which term describes the movement of the hand or foot turning upward?",opts:["Pronation","Dorsiflexion","Supination","Plantarflexion"],c:2,exp:"Supination = rotation of the forearm/hand so the palm faces upward, or foot turns outward."},
+{cat:'mcq',q:"Which term describes the movement of the hand or foot turning downward?",opts:["Pronation","Dorsiflexion","Supination","Plantarflexion"],c:0,exp:"Pronation = rotation of the forearm/hand so the palm faces downward, or foot turns inward."},
+{cat:'mcq',q:"Which term refers to a movement that increases the angle of a joint?",opts:["Flexion","Extension","Abduction","Adduction"],c:1,exp:"Extension increases the angle between two body parts — e.g., straightening the elbow."},
+{cat:'mcq',q:"The term \"Hyperthyroidism\" describes:",opts:["Excessive thyroid gland activity","Deficient secretion of thyroid hormones","Inflammation of the thyroid gland","Enlargement of the thyroid gland"],c:0,exp:"Hyperthyroidism: hyper (excessive) + thyroid + ism = overactivity of the thyroid gland producing excess hormones."},
+{cat:'mcq',q:"The term \"hyperglycemia\" refers to:",opts:["Abnormally low blood sugar","Abnormally high blood calcium","Abnormally high blood sugar","Abnormally low blood potassium"],c:2,exp:"Hyperglycemia: hyper (high) + glyc (sugar) + emia (blood condition) = abnormally high blood sugar."},
+{cat:'mcq',q:"The term \"Hyponatremia\" refers to:",opts:["Abnormally low blood sugar","Abnormally high blood calcium","Abnormally low blood sodium","Abnormally low blood potassium"],c:2,exp:"Hyponatremia: hypo (low) + natr (sodium) + emia (blood) = abnormally low blood sodium levels."},
+{cat:'mcq',q:"The term \"polydipsia\" refers to:",opts:["Excessive thirst","Excessive urination","Excessive hunger","Excessive sweating"],c:0,exp:"Polydipsia: poly (many/excessive) + dipsia (thirst) = condition of excessive thirst, seen in diabetes."},
+{cat:'mcq',q:"The term \"thyroidectomy\" refers to the:",opts:["Inflammation of the thyroid gland","Surgical removal of the thyroid gland","Enlargement of the thyroid gland","Overactivity of the thyroid gland"],c:1,exp:"Thyroidectomy: thyroid + ectomy (removal) = surgical removal of the thyroid gland."},
+{cat:'mcq',q:"The term \"pancreatitis\" refers to the:",opts:["Surgical removal of the pancreas","Inflammation of the pancreas","Underactivity of the pancreas","Overactivity of the pancreas"],c:1,exp:"Pancreatitis: pancreato + itis (inflammation) = inflammation of the pancreas."},
+{cat:'mcq',q:"Which term refers to a condition of excessive thyroid hormone production?",opts:["Hypothyroidism","Hyperthyroidism","Thyroiditis","Thyroidectomy"],c:1,exp:"Hyperthyroidism = excessive production of thyroid hormones (T3/T4) by the thyroid gland."},
+{cat:'mcq',q:"What does the prefix \"adreno-\" refer to in medical terminology?",opts:["Liver","Pancreas","Kidney","Adrenal gland"],c:3,exp:"Adreno- refers to the adrenal glands — located on top of the kidneys. E.g., adrenalectomy."},
+{cat:'mcq',q:"What does \"hypoglycemia\" mean?",opts:["High thyroid hormone","Low calcium in the blood","Low blood sugar","Excess insulin"],c:2,exp:"Hypoglycemia: hypo (low) + glyc (sugar) + emia (blood) = abnormally low blood sugar levels."},
+{cat:'mcq',q:"What is the medical term for \"enlarged thyroid\"?",opts:["Thyroiditis","Thyromegaly","Hyperthyroidism","Goitrectomy"],c:1,exp:"Thyromegaly: thyro (thyroid) + megaly (enlargement) = enlargement of the thyroid gland (goiter)."},
+{cat:'mcq',q:"Which prefix means \"under\" or \"below normal\"?",opts:["Hyper-","Dys-","Hypo-","Anti-"],c:2,exp:"Hypo- means under, below, or deficient — e.g., hypoglycemia, hyponatremia, hypothyroidism."},
+{cat:'mcq',q:"\"Pancreatectomy\" refers to:",opts:["Enlargement of the pancreas","Inflammation of the pancreas","Surgical removal of the pancreas","Dysfunction of the pancreas"],c:2,exp:"Pancreatectomy: pancreato + ectomy (removal) = surgical removal of the pancreas."},
+{cat:'mcq',q:"Which condition results from hypersecretion of growth hormone in adults?",opts:["Gigantism","Dwarfism","Acromegaly","Hypopituitarism"],c:2,exp:"Acromegaly = hypersecretion of GH in ADULTS → enlargement of hands, feet, and face after growth plates close."},
+{cat:'mcq',q:"What does \"Hypercalcemia\" mean?",opts:["High thyroid hormone","High calcium in the blood","High blood sugar","High potassium in the blood"],c:1,exp:"Hypercalcemia: hyper (high) + calc (calcium) + emia (blood) = abnormally high blood calcium levels."},
+{cat:'mcq',q:"What does \"Hyperkalemia\" mean?",opts:["High thyroid hormone","High calcium in the blood","High blood sugar","High potassium in the blood"],c:3,exp:"Hyperkalemia: hyper (high) + kal (potassium) + emia (blood) = abnormally high blood potassium levels."},
+{cat:'mcq',q:"What does \"Adenosis\" mean?",opts:["Enlarged gland","Abnormal condition of a gland","Excision of the adrenal glands","Inflammation of the gland"],c:1,exp:"Adenosis: aden (gland) + osis (abnormal condition) = any abnormal condition or disease of a gland."},
+{cat:'mcq',q:"Which condition is caused by hypersecretion of growth hormone in children?",opts:["Acromegaly","Gigantism","Dwarfism","Diabetes"],c:1,exp:"Gigantism = hypersecretion of GH in CHILDREN (before growth plates close) → abnormally tall stature."},
+{cat:'mcq',q:"Which prefix refers to skin in medical terms?",opts:["Myo-","Derma-","Neuro-","Hepato-"],c:1,exp:"Derma- (or dermato-) refers to skin — e.g., dermatitis, dermatology, dermatoplasty."},
+{cat:'mcq',q:"What does the term subcutaneous mean?",opts:["Beneath the skin","Over the skin","Through the skin","Around the skin"],c:0,exp:"Subcutaneous: sub (beneath) + cutane (skin) + ous = located or administered beneath the skin."},
+{cat:'mcq',q:"The term dermatitis means:",opts:["Skin tumor","Skin inflammation","Skin pain","Skin hardening"],c:1,exp:"Dermatitis: dermat (skin) + itis (inflammation) = inflammation of the skin causing redness, itching."},
+{cat:'mcq',q:"What is the term for a fatty tumor under the skin?",opts:["Melanoma","Carcinoma","Lipoma","Fibroma"],c:2,exp:"Lipoma: lip (fat) + oma (tumor) = a benign soft tumor of fatty tissue located under the skin."},
+{cat:'mcq',q:"Which condition is a fungal infection of the skin?",opts:["Psoriasis","Tinea","Eczema","Urticaria"],c:1,exp:"Tinea is a fungal infection of the skin — includes ringworm (tinea corporis), athlete's foot (tinea pedis)."},
+{cat:'mcq',q:"What does melanoma mean?",opts:["Tumor of fat","Skin inflammation","Malignant tumor of pigment cells","Infection of sebaceous gland"],c:2,exp:"Melanoma: melan (black/pigment) + oma (tumor) = malignant tumor arising from melanocytes (pigment cells)."},
+{cat:'mcq',q:"Which term means plastic surgery of the skin?",opts:["Dermatoplasty","Dermectomy","Dermoscopy","Dermatitis"],c:0,exp:"Dermatoplasty: dermato (skin) + plasty (surgical repair) = plastic surgery to repair or reshape skin."},
+{cat:'mcq',q:"What is the meaning of onychomycosis?",opts:["Nail inflammation","Nail fungus infection","Nail discoloration","Nail removal"],c:1,exp:"Onychomycosis: onych (nail) + myco (fungus) + osis (condition) = fungal infection of the nail."},
+{cat:'mcq',q:"Which term refers to sweat glands?",opts:["Sebaceous","Apocrine","Eccrine","Sudoriferous"],c:3,exp:"Sudoriferous glands are sweat glands. Sebaceous glands produce oil (sebum). Sudor = sweat in Latin."},
+{cat:'mcq',q:"What does hidradenitis mean?",opts:["Inflammation of sebaceous glands","Inflammation of sweat glands","Inflammation of hair follicles","Inflammation of subcutaneous tissue"],c:1,exp:"Hidradenitis: hidr (sweat) + aden (gland) + itis (inflammation) = inflammation of sweat glands."},
+{cat:'mcq',q:"Which of the following best defines carcinoma?",opts:["Benign tumor","Malignant skin cancer","Inflammatory skin disease","Fungal infection"],c:1,exp:"Carcinoma = malignant cancer arising from epithelial cells — a type of malignant skin cancer among others."},
+{cat:'mcq',q:"Which cells produce melanin?",opts:["Keratinocytes","Melanocytes","Fibroblasts","Langerhans cells"],c:1,exp:"Melanocytes are specialized cells in the epidermis that produce melanin — the pigment giving skin its color."},
+{cat:'mcq',q:"What is the outer, protective layer of the skin?",opts:["Epidermis","Stratum basale","Dermis","Subcutaneous fat"],c:0,exp:"The epidermis is the outermost layer of skin — provides a waterproof barrier and creates skin tone."},
+{cat:'mcq',q:"What is the meaning of Onychophagia?",opts:["Nail inflammation","Nail fungus infection","Nail discoloration","Nail biting"],c:3,exp:"Onychophagia: onych (nail) + phagia (eating/biting) = compulsive nail biting habit."},
+{cat:'mcq',q:"What is the meaning of Onychocryptosis?",opts:["Nail inflammation","Nail fungus infection","An ingrown nail","Nail biting"],c:2,exp:"Onychocryptosis: onych (nail) + crypt (hidden) + osis (condition) = ingrown nail condition."},
+{cat:'mcq',q:"Which combining form means nail?",opts:["Trich/o","Seb/o","Onych/o","Pil/o"],c:2,exp:"Onych/o is the combining form for nail — used in onychomycosis, onychophagia, etc."},
+{cat:'mcq',q:"Which of the following is not part of the integumentary system?",opts:["Skin","Hair","Teeth","Nails"],c:2,exp:"Teeth are part of the digestive system. The integumentary system includes skin, hair, nails, and glands."},
+{cat:'mcq',q:"A white discoloration of the skin is called:",opts:["Melanosis","Leukoderma","Erythema","Xanthoderma"],c:1,exp:"Leukoderma: leuko (white) + derma (skin) = white patches or discoloration of the skin."},
+{cat:'mcq',q:"Yellow discoloration of the skin is termed:",opts:["Erythema","Cyanosis","Jaundice","Melanoma"],c:2,exp:"Jaundice = yellow discoloration of the skin and eyes due to excess bilirubin in the blood."},
+{cat:'mcq',q:"Swelling caused by fluid retention is:",opts:["Edema","Erythema","Cyanosis","Jaundice"],c:0,exp:"Edema = accumulation of excess fluid in tissues causing swelling — can be localized or generalized."},
+{cat:'mcq',q:"A surgical incision into the skin is:",opts:["Dermatitis","Dermatoplasty","Dermotomy","Dermabrasion"],c:2,exp:"Dermotomy: derm (skin) + otomy (incision) = surgical incision into or through the skin."},
+{cat:'mcq',q:"What is the term for surgical removal of skin tissue?",opts:["Dermectomy","Dermatoplasty","Biopsy","Dermabrasion"],c:0,exp:"Dermectomy: derm (skin) + ectomy (removal) = surgical removal of skin tissue."},
+{cat:'mcq',q:"Necrosis of skin refers to:",opts:["Inflammation","Overgrowth","Tissue death","Swelling"],c:2,exp:"Necrosis = premature death of cells and living tissue — skin necrosis means death of skin tissue."},
+{cat:'mcq',q:"What is the term for fibrous tumor of the skin?",opts:["Dermectomy","Dermatoplasty","Dermatofibroma","Dermabrasion"],c:2,exp:"Dermatofibroma: dermato (skin) + fibr (fiber) + oma (tumor) = benign fibrous skin tumor."},
+{cat:'mcq',q:"What does the prefix \"a-\" or \"an-\" mean?",opts:["With","Not or without","Before","After"],c:1,exp:"The prefix a-/an- means not or without — e.g., apnea (without breathing), anemia (without blood)."},
+{cat:'mcq',q:"What does the prefix \"peri-\" mean?",opts:["Outside","Near","Around","Before"],c:2,exp:"Peri- means around or surrounding — e.g., pericardium (around the heart), periosteum (around bone)."},
+{cat:'mcq',q:"What does the prefix \"re-\" mean?",opts:["Outside","Near","Around","Again"],c:3,exp:"Re- means again or back — e.g., renal (again), rehabilitation (restoring again)."},
+{cat:'mcq',q:"What does the prefix \"pseud(o)-\" mean?",opts:["Outside","False","True","Again"],c:1,exp:"Pseudo- means false — e.g., pseudocyst (false cyst), pseudomonas (false unit)."},
+{cat:'mcq',q:"What does the prefix \"eu-\" mean?",opts:["Outside","False","True / normal","Again"],c:2,exp:"Eu- means good, true, or normal — e.g., euphoria (feeling good), euglycemia (normal blood sugar)."},
+];
+
+const TF=[
+{cat:'tf',isTF:true,q:"Acromegaly refers to enlargement of the extremities.",opts:["True","False"],c:0,exp:"TRUE. Acromegaly results from excess growth hormone in adults, causing enlargement of extremities (hands, feet, face)."},
+{cat:'tf',isTF:true,q:"Adenectomy means inflammation of a gland.",opts:["True","False"],c:1,exp:"FALSE. Adenectomy means EXCISION (removal) of a gland. Adenitis is the term for gland inflammation."},
+{cat:'tf',isTF:true,q:"Adenitis is inflammation of a gland.",opts:["True","False"],c:0,exp:"TRUE. Adenitis: aden (gland) + itis (inflammation) = inflammation of a gland."},
+{cat:'tf',isTF:true,q:"Adenomegaly means enlarged gland.",opts:["True","False"],c:0,exp:"TRUE. Adenomegaly: aden (gland) + megaly (enlargement) = abnormal enlargement of a gland."},
+{cat:'tf',isTF:true,q:"Adenosis means normal condition of a gland.",opts:["True","False"],c:1,exp:"FALSE. Adenosis means ABNORMAL condition of a gland — the suffix -osis indicates an abnormal state."},
+{cat:'tf',isTF:true,q:"Adrenalectomy is excision of the adrenal glands.",opts:["True","False"],c:0,exp:"TRUE. Adrenalectomy: adrenal + ectomy (removal) = surgical excision of the adrenal gland(s)."},
+{cat:'tf',isTF:true,q:"Adrenomegaly means shrinkage of adrenal glands.",opts:["True","False"],c:1,exp:"FALSE. Adrenomegaly means ENLARGEMENT of the adrenal glands, not shrinkage. -megaly = enlargement."},
+{cat:'tf',isTF:true,q:"Endocrinology is the study of the endocrine system.",opts:["True","False"],c:0,exp:"TRUE. Endocrinology: endocrin (endocrine) + ology (study of) = study of the endocrine system and its disorders."},
+{cat:'tf',isTF:true,q:"Endocrinopathy means disease of the endocrine system.",opts:["True","False"],c:0,exp:"TRUE. Endocrinopathy: endocrin + pathy (disease) = any disease or disorder of the endocrine system."},
+{cat:'tf',isTF:true,q:"Euglycemia means excessive sugar in the blood.",opts:["True","False"],c:1,exp:"FALSE. Euglycemia means NORMAL blood sugar. Eu- = normal/good. Hyperglycemia = excessive blood sugar."},
+{cat:'tf',isTF:true,q:"Hypercalcemia means excessive calcium in the blood.",opts:["True","False"],c:0,exp:"TRUE. Hypercalcemia: hyper (excessive) + calc (calcium) + emia (blood) = high blood calcium levels."},
+{cat:'tf',isTF:true,q:"Hyperglycemia means low blood sugar.",opts:["True","False"],c:1,exp:"FALSE. Hyperglycemia means HIGH blood sugar. Hyper = excessive. Low blood sugar = hypoglycemia."},
+{cat:'tf',isTF:true,q:"Hyperkalemia means excessive potassium in the blood.",opts:["True","False"],c:0,exp:"TRUE. Hyperkalemia: hyper (excessive) + kal (potassium) + emia (blood) = high blood potassium levels."},
+{cat:'tf',isTF:true,q:"Hyperthyroidism refers to decreased thyroid activity.",opts:["True","False"],c:1,exp:"FALSE. Hyperthyroidism = INCREASED (excessive) thyroid activity. Decreased activity = hypothyroidism."},
+{cat:'tf',isTF:true,q:"Hyponatremia means deficient sodium in the blood.",opts:["True","False"],c:0,exp:"TRUE. Hyponatremia: hypo (low) + natr (sodium) + emia (blood) = abnormally low sodium in the blood."},
+{cat:'tf',isTF:true,q:"Parathyroidectomy means removal of the parathyroid glands.",opts:["True","False"],c:0,exp:"TRUE. Parathyroidectomy: parathyroid + ectomy (removal) = surgical removal of parathyroid glands."},
+{cat:'tf',isTF:true,q:"Polydipsia means condition of excessive thirst.",opts:["True","False"],c:0,exp:"TRUE. Polydipsia: poly (many/excessive) + dipsia (thirst) = excessive thirst, common in diabetes mellitus."},
+{cat:'tf',isTF:true,q:"Acromegaly results from low growth hormone levels.",opts:["True","False"],c:1,exp:"FALSE. Acromegaly results from EXCESSIVE (hyper) growth hormone in adults — not low levels."},
+{cat:'tf',isTF:true,q:"Adrenopathy means disease of the adrenal glands.",opts:["True","False"],c:0,exp:"TRUE. Adrenopathy: adreno (adrenal) + pathy (disease) = any disease or disorder of the adrenal glands."},
+{cat:'tf',isTF:true,q:"Parathyroidoma is a tumor of the parathyroid glands.",opts:["True","False"],c:0,exp:"TRUE. Parathyroidoma: parathyroid + oma (tumor) = a tumor arising from the parathyroid gland tissue."},
+];
+
+const ALL=[...MCQ,...TF];
+function selectCat(c,btn){cat=c;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('qCount').textContent=(c==='all'?ALL:c==='mcq'?MCQ:TF).length;}
+function startQuiz(){qs=cat==='all'?[...ALL]:cat==='mcq'?[...MCQ]:[...TF];ans=0;cor=0;wr=0;document.getElementById('startScreen').style.display='none';document.getElementById('quizWrapper').style.display='block';document.getElementById('stickyBar').style.display='block';document.getElementById('resultsBox').style.display='none';document.getElementById('submitBtn').disabled=true;render();tick();}
+function render(){const c=document.getElementById('cardsContainer');c.innerHTML='';qs.forEach((q,i)=>{const d=document.createElement('div');d.className='q-card';d.id='card_'+i;const oh=q.opts.map((o,j)=>`<button class="opt" id="opt_${i}_${j}" onclick="pick(${i},${j},${q.c})"><span class="opt-letter">${q.isTF?(j===0?'T':'F'):L[j]}</span>${o}</button>`).join('');d.innerHTML=`<div class="q-header"><div class="q-num">${i+1}</div><span class="cat-tag ${q.cat}">${q.cat==='mcq'?'MCQ':'True / False'}</span></div><div class="q-text">${q.q}</div><div class="opts">${oh}</div><div class="q-feedback" id="fb_${i}"></div>`;c.appendChild(d);});}
+function pick(i,chosen,ci){const q=qs[i];for(let j=0;j<q.opts.length;j++){const b=document.getElementById('opt_'+i+'_'+j);b.disabled=true;if(j===ci)b.classList.add('correct');else if(j===chosen)b.classList.add('wrong');}const fb=document.getElementById('fb_'+i);const card=document.getElementById('card_'+i);const ok=chosen===ci;if(ok){cor++;card.classList.add('answered-correct');}else{wr++;card.classList.add('answered-wrong');}ans++;fb.style.display='block';fb.className='q-feedback '+(ok?'correct':'wrong');fb.innerHTML=`<strong>${ok?'✅':'❌'} ${q.exp}</strong>`;tick();if(ans===qs.length)document.getElementById('submitBtn').disabled=false;}
+function tick(){const t=qs.length;document.getElementById('sNum').textContent=ans+'/'+t;document.getElementById('sC').textContent='✅ '+cor;document.getElementById('sW').textContent='❌ '+wr;document.getElementById('sP').textContent='📊 '+(t>0?Math.round((cor/t)*100):0)+'%';document.getElementById('sFill').style.width=(t>0?(ans/t)*100:0)+'%';}
+function showResults(){const box=document.getElementById('resultsBox');box.style.display='block';box.scrollIntoView({behavior:'smooth'});const t=qs.length,p=t>0?Math.round((cor/t)*100):0;document.getElementById('rScore').textContent=cor;document.getElementById('rTotal').textContent=t;document.getElementById('rC').textContent=cor;document.getElementById('rW').textContent=wr;document.getElementById('rP').textContent=p+'%';const m=['🌟 Excellent! Keep it up!','👏 Great job!','💪 Good effort!','📚 Keep studying!','🔄 Practice makes perfect!'];document.getElementById('rMsg').textContent=p>=90?m[0]:p>=75?m[1]:p>=60?m[2]:p>=40?m[3]:m[4];document.getElementById('ringFg').style.strokeDashoffset=402-(402*p/100);const rev=document.getElementById('reviewDiv');const wrongs=[];qs.forEach((q,i)=>{if(Array.from(document.querySelectorAll(`[id^="opt_${i}_"]`)).some(b=>b.classList.contains('wrong')))wrongs.push(q);});rev.innerHTML=wrongs.length>0?`<h3>❌ Questions to Review (${wrongs.length})</h3>`+wrongs.map(q=>`<div class="rev-item wrong"><div class="rt">${q.q}</div><div style="color:#065f46;font-weight:600;margin-top:4px">✅ ${q.opts[q.c]}</div><div class="exp">${q.exp}</div></div>`).join(''):'<h3>🎉 Perfect Score! All questions answered correctly!</h3>';}
+function goHome(){document.getElementById('startScreen').style.display='block';document.getElementById('quizWrapper').style.display='none';document.getElementById('stickyBar').style.display='none';}
+document.getElementById('qCount').textContent=ALL.length;
+</script>
+</body>
+</html>
